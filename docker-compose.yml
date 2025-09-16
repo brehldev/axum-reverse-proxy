@@ -1,0 +1,23 @@
+services:
+  httpbin:
+    image: kennethreitz/httpbin
+    ports:
+        - "80:80"
+    networks:
+      - proxy
+
+  axum-reverse-proxy:
+    image: axum-reverse-proxy:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      REVERSE_PROXY_TARGET_URL: http://httpbin:80
+      RUST_LOG: info
+    ports:
+      - "3000:3000"
+    networks:
+      - proxy
+
+networks:
+  proxy:
